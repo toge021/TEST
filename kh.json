@@ -1,0 +1,96 @@
+{
+    "bot-name": "TOGE-MD-V5",
+    "description": "WhatsApp bot multi-session avec gateway Express",
+    "logo": "https://files.catbox.moe/yw2ty2.jpeg",
+    "keywords": ["bot", "whatsapp", "toge"],
+    "documentation-link": "http://localhost:2001",
+    "owner-verification": "bookmakerp@gmail.com",
+
+    "env": {
+        "PREFIX": {
+            "description": "Préfixe des commandes du bot (ex: ., !, @)",
+            "value": ".",
+            "required": true
+        },
+        "OWNER_NUMBER": {
+            "description": "Numéro WhatsApp du propriétaire du bot",
+            "value": "24176209643",
+            "required": true
+        },
+        "OWNER_NAME": {
+            "description": "Nom du propriétaire du bot",
+            "value": "𝚃𝙾𝙶𝙴 𝙸𝙽𝚄𝙼𝙰𝙺𝙸",
+            "required": true
+        },
+        "BOT_NAME": {
+            "description": "Nom du bot",
+            "value": "𝚃𝙾𝙶𝙴-𝙼𝙳-𝚅𝟻",
+            "required": true
+        },
+        "SESSION_ID": {
+            "description": "ID de session pour les credentials WhatsApp (laissez vide pour nouvelle session)",
+            "value": "TOGE-MD_873e08621f8dbc8fb92c8f44de13e347",
+            "required": false
+        },
+        "AUTO_READ": {
+            "description": "Lecture automatique des messages (true/false)",
+            "value": false,
+            "required": false
+        },
+        "AUTO_LIKE_STATUS": {
+            "description": "Like automatique des statuts WhatsApp (true/false)",
+            "value": false,
+            "required": false
+        },
+        "AUTO_TYPING": {
+            "description": "Afficher 'en train d'écrire' automatiquement (true/false)",
+            "value": false,
+            "required": false
+        },
+        "AUTO_RECORDING": {
+            "description": "Afficher 'en train d'enregistrer' automatiquement (true/false)",
+            "value": false,
+            "required": false
+        },
+        "AUTO_TYPING_BEFORE_REPLY": {
+            "description": "Afficher 'en train d'écrire' avant chaque réponse (true/false)",
+            "value": false,
+            "required": false
+        },
+        "LOG_LEVEL": {
+            "description": "Niveau de log (info, debug, warn, error)",
+            "value": "info",
+            "required": false
+        },
+        "RECONNECT_DELAY": {
+            "description": "Délai de reconnexion en cas de déconnexion (en ms)",
+            "value": 5000,
+            "required": false
+        },
+        "DEBUG_MODE": {
+            "description": "Mode debug pour afficher plus d'informations (true/false)",
+            "value": true,
+            "required": false
+        },
+        "DOSSIER_AUTH": {
+            "description": "Dossier où stocker les sessions d'authentification",
+            "value": "sessions",
+            "required": false
+        },
+        "GITHUB_USERNAME": {
+            "description": "Nom d'utilisateur GitHub pour les fonctionnalités liées",
+            "value": "toge021",
+            "required": false
+        },
+        "GITHUB_TOKEN": {
+            "description": "Token GitHub pour l'authentification API",
+            "value": "",
+            "required": false
+        },
+        "AUTO_PAIR_ON_START": {
+            "description": "Appairage automatique au démarrage (true/false)",
+            "value": true,
+            "required": false
+        }
+    }
+}
