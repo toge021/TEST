@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import config from './config.js';
+import { setupSessionFromKh } from './setup-session.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -49,26 +50,34 @@ app.get('/api/session/:botId', async (req, res) => {
 // POST /api/connect-session - Connecter une session
 app.post('/api/connect-session', async (req, res) => {
     try {
-        // Utilisation des variables du config.js
+        // Priorité: req.body > config.js > kh.json
+        let sessionId = req.body.botId || config.SESSION_ID;
+        
+        // Si toujours vide, essayer de lire depuis kh.json
+        if (!sessionId) {
+            const { getSessionIdFromKh } = await import('./setup-session.js');
+            sessionId = getSessionIdFromKh();
+        }
+        
         const payload = {
-            sessionId: req.body.botId || config.SESSION_ID,
+            sessionId: sessionId,
             config: {
-                prefix: config.PREFIX,
-                ownerNumber: config.OWNER_NUMBER,
-                ownerName: config.OWNER_NAME,
-                botName: config.BOT_NAME,
-                autoRead: config.AUTO_READ,
-                autoLikeStatus: config.AUTO_LIKE_STATUS,
-                autoTyping: config.AUTO_TYPING,
-                autoRecording: config.AUTO_RECORDING,
-                autoTypingBeforeReply: config.AUTO_TYPING_BEFORE_REPLY,
-                logLevel: config.LOG_LEVEL,
-                reconnectDelay: config.RECONNECT_DELAY,
-                debugMode: config.DEBUG_MODE,
-                dossierAuth: config.DOSSIER_AUTH,
-                githubUsername: config.GITHUB_USERNAME,
-                githubToken: config.GITHUB_TOKEN,
-                autoPairOnStart: config.AUTO_PAIR_ON_START
+                prefix: req.body.prefix || config.PREFIX,
+                ownerNumber: req.body.ownerNumber || config.OWNER_NUMBER,
+                ownerName: req.body.ownerName || config.OWNER_NAME,
+                botName: req.body.botName || config.BOT_NAME,
+                autoRead: req.body.autoRead ?? config.AUTO_READ,
+                autoLikeStatus: req.body.autoLikeStatus ?? config.AUTO_LIKE_STATUS,
+                autoTyping: req.body.autoTyping ?? config.AUTO_TYPING,
+                autoRecording: req.body.autoRecording ?? config.AUTO_RECORDING,
+                autoTypingBeforeReply: req.body.autoTypingBeforeReply ?? config.AUTO_TYPING_BEFORE_REPLY,
+                logLevel: req.body.logLevel || config.LOG_LEVEL,
+                reconnectDelay: req.body.reconnectDelay || config.RECONNECT_DELAY,
+                debugMode: req.body.debugMode ?? config.DEBUG_MODE,
+                dossierAuth: req.body.dossierAuth || config.DOSSIER_AUTH,
+                githubUsername: req.body.githubUsername || config.GITHUB_USERNAME,
+                githubToken: req.body.githubToken || config.GITHUB_TOKEN,
+                autoPairOnStart: req.body.autoPairOnStart ?? config.AUTO_PAIR_ON_START
             }
         };
         
@@ -90,7 +99,6 @@ app.post('/api/connect-session', async (req, res) => {
 // PUT /api/session/:botId/settings - Mettre à jour un setting
 app.put('/api/session/:botId/settings', async (req, res) => {
     try {
-        // Fusion : req.body écrase les valeurs par défaut du config.js
         const settings = {
             prefix: req.body.prefix ?? config.PREFIX,
             autoRead: req.body.autoRead ?? config.AUTO_READ,
@@ -116,15 +124,19 @@ app.put('/api/session/:botId/settings', async (req, res) => {
     }
 });
 
-// =================== DÉMARRAGE ===================
+// =================== DÉMARRAGE AUTOMATIQUE ===================
 
-app.listen(PORT, () => {
+// Démarrer le serveur et configurer la session automatiquement
+app.listen(PORT, async () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
     console.log(`🔗 Backend API: ${BASE_URL}`);
     console.log(`📡 GET  /api/sessions`);
     console.log(`📡 GET  /api/session/:botId`);
-    console.log(`📡 POST /api/connect-session (utilise config.js)`);
-    console.log(`📡 PUT  /api/session/:botId/settings (valeurs par défaut depuis config.js)`);
+    console.log(`📡 POST /api/connect-session`);
+    console.log(`📡 PUT  /api/session/:botId/settings`);
+    
+    // Auto-setup session au démarrage
+    await setupSessionFromKh();
 });
 
 export default app;
